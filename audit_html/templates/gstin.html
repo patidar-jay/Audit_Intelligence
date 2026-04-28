@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Intelligence — GSTIN Validator</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">🔍 <span>Audit</span> Intelligence</div>
+    <div class="sidebar-user">
+      <div class="name" id="sidebar-name">User</div>
+      <div class="role" id="sidebar-role">Auditor</div>
+    </div>
+    <div class="sidebar-label">Navigation</div>
+    <a class="nav-link" href="/dashboard"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-link" href="/history"><span class="icon">📜</span> Audit History</a>
+    <a class="nav-link active" href="/gstin"><span class="icon">🔍</span> GSTIN Validator</a>
+    <div class="sidebar-divider"></div>
+    <button class="nav-link" onclick="logout()"><span class="icon">🚪</span> Logout</button>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>🔍 GSTIN <span>Validator</span></h1>
+      <p>Validate Indian GST Numbers — Format check + State identification</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-single" data-tab-group="gstin">Single Check</button>
+      <button class="tab-btn" data-tab="tab-bulk" data-tab-group="gstin">Bulk Check</button>
+    </div>
+
+    <!-- Single -->
+    <div class="tab-content active" id="tab-single" data-tab-group="gstin">
+      <div class="card" style="max-width:500px">
+        <div class="form-group">
+          <label class="form-label">Enter GSTIN (15 characters)</label>
+          <input class="form-input" type="text" id="gstin-input" placeholder="e.g. 27AAPFU0939F1ZV" maxlength="15" style="text-transform:uppercase">
+        </div>
+        <button class="btn btn-primary" onclick="validateSingle()">✅ Validate</button>
+        <div id="single-result" style="margin-top:16px"></div>
+      </div>
+
+      <div class="card mt-16" style="max-width:500px">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px">GSTIN FORMAT GUIDE</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Position</th><th>Characters</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1–2</td><td>Digits</td><td>State Code (01–37)</td></tr>
+              <tr><td>3–7</td><td>Letters</td><td>PAN first 5 characters</td></tr>
+              <tr><td>8–11</td><td>Digits</td><td>PAN digits</td></tr>
+              <tr><td>12</td><td>Letter</td><td>PAN last character</td></tr>
+              <tr><td>13</td><td>1–9 or A–Z</td><td>Entity number</td></tr>
+              <tr><td>14</td><td>Z</td><td>Always Z</td></tr>
+              <tr><td>15</td><td>Digit/Letter</td><td>Checksum</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">Example: <strong style="color:var(--cyan)">27AAPFU0939F1ZV</strong> → Maharashtra</p>
+      </div>
+    </div>
+
+    <!-- Bulk -->
+    <div class="tab-content" id="tab-bulk" data-tab-group="gstin">
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">Enter GSTINs (one per line)</label>
+          <textarea class="form-input" id="bulk-input" rows="8" placeholder="27AAPFU0939F1ZV&#10;29ABCDE1234F1Z5&#10;33XYZAB5678G2ZK"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="validateBulk()">✅ Validate All</button>
+        <div id="bulk-stats" style="display:flex;gap:10px;margin-top:14px"></div>
+        <div id="bulk-result" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<div id="toast"></div>
+<script src="/static/js/utils.js"></script>
+<script>
+  const user = requireAuth();
+  fillSidebarUser();
+  initTabs();
+
+  document.getElementById("gstin-input").addEventListener("input", function() {
+    this.value = this.value.toUpperCase();
+  });
+
+  async function validateSingle() {
+    const gstin = document.getElementById("gstin-input").value.trim().toUpperCase();
+    const resEl = document.getElementById("single-result");
+    if (!gstin) { resEl.innerHTML = '<div class="alert alert-error">Please enter a GSTIN.</div>'; return; }
+    try {
+      const r = await api("/api/gstin/validate", "POST", { gstin });
+      if (r.valid) {
+        resEl.innerHTML = `
+          <div class="alert alert-success">
+            <strong>✅ VALID GSTIN</strong><br>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+              <div><span style="color:var(--muted);font-size:11px">GSTIN</span><br><strong style="font-size:15px;font-family:monospace">${r.gstin}</strong></div>
+              <div><span style="color:var(--muted);font-size:11px">State</span><br><strong>${r.state}</strong></div>
+              <div><span style="color:var(--muted);font-size:11px">State Code</span><br><strong>${r.state_code}</strong></div>
+              <div><span style="color:var(--muted);font-size:11px">PAN</span><br><strong style="font-family:monospace">${r.pan}</strong></div>
+            </div>
+          </div>`;
+      } else {
+        resEl.innerHTML = `
+          <div class="alert alert-error">
+            <strong>❌ INVALID GSTIN</strong><br>${r.message}
+          </div>`;
+      }
+    } catch(e) {
+      resEl.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+    }
+  }
+
+  async function validateBulk() {
+    const lines = document.getElementById("bulk-input").value
+      .split("\n").map(l=>l.trim().toUpperCase()).filter(Boolean);
+    if (!lines.length) { toast("Please enter at least one GSTIN.", "error"); return; }
+
+    const data = await api("/api/gstin/bulk", "POST", { gstins: lines });
+    const results = data.results || [];
+    const valid   = results.filter(r=>r.valid).length;
+    const invalid = results.length - valid;
+
+    document.getElementById("bulk-stats").innerHTML = `
+      <span class="badge badge-cyan">Total: ${results.length}</span>
+      <span class="badge badge-success">✅ Valid: ${valid}</span>
+      <span class="badge badge-danger">❌ Invalid: ${invalid}</span>`;
+
+    document.getElementById("bulk-result").innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>GSTIN</th><th>Status</th><th>State</th><th>Message</th></tr></thead>
+          <tbody>${results.map((r,i) => `
+            <tr>
+              <td style="font-family:monospace">${lines[i]}</td>
+              <td>${r.valid ? '<span class="badge badge-success">Valid</span>' : '<span class="badge badge-danger">Invalid</span>'}</td>
+              <td>${r.state||'—'}</td>
+              <td style="color:var(--muted)">${r.message||''}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  // Enter key for single
+  document.getElementById("gstin-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") validateSingle();
+  });
+</script>
+</body>
+</html>

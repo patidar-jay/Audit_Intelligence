@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Intelligence — Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">🔍 <span>Audit</span> Intelligence</div>
+    <div class="sidebar-user">
+      <div class="name" id="sidebar-name">User</div>
+      <div class="role" id="sidebar-role">Auditor</div>
+    </div>
+    <div class="sidebar-label">Navigation</div>
+    <a class="nav-link active" href="/dashboard"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-link" href="/history"><span class="icon">📜</span> Audit History</a>
+    <a class="nav-link" href="/gstin"><span class="icon">🔍</span> GSTIN Validator</a>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Upload</div>
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <div class="icon">📁</div>
+      <p>Click or drag CSV / Excel</p>
+      <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFileSelect(this)">
+    </div>
+    <button class="btn btn-secondary btn-full" style="margin-top:8px" onclick="downloadSample()">⬇ Sample CSV</button>
+    <button class="btn btn-primary btn-full"   style="margin-top:6px" onclick="runDemo()">🚀 Run Demo</button>
+    <div class="sidebar-divider"></div>
+    <button class="nav-link" onclick="logout()"><span class="icon">🚪</span> Logout</button>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1>🔍 <span>Audit</span> Intelligence</h1>
+      <p>AI-Based Financial Fraud Detection · Isolation Forest + Rule Engine</p>
+    </div>
+
+    <!-- Progress bar (hidden by default) -->
+    <div id="progress-section" style="display:none" class="card mb-20">
+      <div class="card-title" id="progress-label">Processing...</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+    </div>
+
+    <!-- Alert -->
+    <div id="main-alert" style="display:none" class="mb-16"></div>
+
+    <!-- Results Section (hidden until audit runs) -->
+    <div id="results-section" style="display:none">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-overview" data-tab-group="main">📋 Overview</button>
+        <button class="tab-btn" data-tab="tab-flagged" data-tab-group="main">🚨 Flagged Transactions</button>
+        <button class="tab-btn" data-tab="tab-vendors" data-tab-group="main">🏢 Vendor Risk</button>
+        <button class="tab-btn" data-tab="tab-analytics" data-tab-group="main">📈 Analytics</button>
+      </div>
+
+      <!-- ── TAB 1: Overview ──────────────────────────────────────────── -->
+      <div class="tab-content active" id="tab-overview" data-tab-group="main">
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <div class="mb-20">
+          <div class="section-header"><div class="section-title">💡 AI Insights</div></div>
+          <div id="insights-container"></div>
+        </div>
+        <div class="grid-2">
+          <div class="chart-box"><h3>Flag Breakdown</h3><canvas id="chart-flags" width="400" height="240"></canvas></div>
+          <div class="chart-box"><h3>Payment Mode</h3><canvas id="chart-payment" width="400" height="240"></canvas></div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-secondary" id="pdf-btn" onclick="downloadPDF()" style="display:none">📄 Download PDF Report</button>
+        </div>
+      </div>
+
+      <!-- ── TAB 2: Flagged Transactions ────────────────────────────── -->
+      <div class="tab-content" id="tab-flagged" data-tab-group="main">
+        <div class="filter-bar">
+          <input class="form-input" type="text" id="txn-search" placeholder="🔍 Search vendor or invoice..." oninput="filterTxnTable()">
+          <select class="form-input" id="flag-filter" onchange="filterTxnTable()" style="max-width:200px">
+            <option value="">All Flags</option>
+            <option value="Duplicate Invoice">Duplicate Invoice</option>
+            <option value="Cash Limit Breach">Cash Limit Breach</option>
+            <option value="Structured Payment">Structured Payment</option>
+            <option value="AI Anomaly">AI Anomaly</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="exportTableCSV('txn-table','flagged_transactions.csv')">⬇ Export CSV</button>
+        </div>
+        <div id="txn-count" style="font-size:13px;color:var(--muted);margin-bottom:10px"></div>
+        <div class="alert alert-info mb-16">
+          💡 <strong>Suggested Amount</strong> column shows the category average — use this to correct AI anomaly values.
+        </div>
+        <div class="table-wrap">
+          <table id="txn-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Date</th><th>Invoice</th><th>Vendor</th>
+                <th>Type</th><th>Amount (Rs)</th><th>Suggested</th>
+                <th>Mode</th><th>Category</th><th>AI Score</th><th>Flags</th>
+              </tr>
+            </thead>
+            <tbody id="txn-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB 3: Vendor Risk ─────────────────────────────────────── -->
+      <div class="tab-content" id="tab-vendors" data-tab-group="main">
+        <div class="filter-bar">
+          <input class="form-input" type="text" id="vendor-search" placeholder="🔍 Search vendor..." oninput="filterVendorTable()" style="max-width:280px">
+          <label style="font-size:13px;color:var(--muted)">Filter:</label>
+          <label style="font-size:13px;cursor:pointer"><input type="checkbox" id="chk-high" checked onchange="filterVendorTable()"> <span style="color:#fca5a5">High</span></label>
+          <label style="font-size:13px;cursor:pointer"><input type="checkbox" id="chk-med"  checked onchange="filterVendorTable()"> <span style="color:#fcd34d">Medium</span></label>
+          <label style="font-size:13px;cursor:pointer"><input type="checkbox" id="chk-low"  checked onchange="filterVendorTable()"> <span style="color:#6ee7b7">Low</span></label>
+          <button class="btn btn-secondary btn-sm" onclick="exportTableCSV('vendor-table','vendor_risk.csv')">⬇ Export CSV</button>
+        </div>
+        <div id="risk-summary" style="display:flex;gap:10px;margin-bottom:14px"></div>
+        <div class="table-wrap">
+          <table id="vendor-table">
+            <thead>
+              <tr>
+                <th>Vendor</th><th>Transactions</th><th>Total Amount</th>
+                <th>Flagged</th><th>Risk Score</th><th>Risk Level</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB 4: Analytics ───────────────────────────────────────── -->
+      <div class="tab-content" id="tab-analytics" data-tab-group="main">
+        <div class="chart-box mb-16">
+          <h3>Monthly Expense Trend</h3>
+          <canvas id="chart-monthly" width="900" height="280"></canvas>
+        </div>
+        <div class="grid-2 mb-16">
+          <div class="chart-box"><h3>Spend by Category</h3><canvas id="chart-category" width="400" height="260"></canvas></div>
+          <div class="chart-box"><h3>Top Vendors by Amount</h3><canvas id="chart-vendors" width="400" height="260"></canvas></div>
+        </div>
+        <div style="margin-top:8px">
+          <button class="btn btn-secondary" onclick="exportFullCSV()">⬇ Export Full Audit CSV</button>
+        </div>
+      </div>
+    </div><!-- /results-section -->
+
+    <!-- Landing state -->
+    <div id="landing-section">
+      <div class="card" style="text-align:center;padding:60px 40px">
+        <div style="font-size:56px;margin-bottom:16px">📊</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:8px">Upload a File to Start Audit</div>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:28px">Use the sidebar to upload CSV or Excel, or click Run Demo</p>
+        <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap">
+          <div class="card" style="padding:16px 20px;text-align:center">
+            <div style="font-size:28px">🤖</div>
+            <div style="font-weight:700;margin-top:6px">Isolation Forest AI</div>
+            <div style="color:var(--muted);font-size:12px">Anomaly Detection</div>
+          </div>
+          <div class="card" style="padding:16px 20px;text-align:center">
+            <div style="font-size:28px">📋</div>
+            <div style="font-weight:700;margin-top:6px">4 Compliance Rules</div>
+            <div style="color:var(--muted);font-size:12px">Rule-Based Engine</div>
+          </div>
+          <div class="card" style="padding:16px 20px;text-align:center">
+            <div style="font-size:28px">🏢</div>
+            <div style="font-weight:700;margin-top:6px">Vendor Risk Score</div>
+            <div style="color:var(--muted);font-size:12px">0–100 Rating</div>
+          </div>
+          <div class="card" style="padding:16px 20px;text-align:center">
+            <div style="font-size:28px">📄</div>
+            <div style="font-weight:700;margin-top:6px">PDF Reports</div>
+            <div style="color:var(--muted);font-size:12px">Download Anytime</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p>Running AI Audit Pipeline...</p>
+</div>
+<div id="toast"></div>
+
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>
