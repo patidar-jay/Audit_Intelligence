@@ -11,13 +11,29 @@ try:
 except ImportError:
     MYSQL_AVAILABLE = False
 
-DB_CONFIG = {
-    "host":     os.getenv("DB_HOST", "localhost"),
-    "port":     int(os.getenv("DB_PORT", 3306)),
-    "user":     os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", "root"),
-    "database": os.getenv("DB_NAME", "audit_intelligence"),
-}
+def _load_db_config():
+    """Load DB config from st.secrets (Streamlit Cloud) → env vars → defaults."""
+    try:
+        import streamlit as st
+        if "mysql" in st.secrets:
+            return {
+                "host":     st.secrets["mysql"]["host"],
+                "port":     int(st.secrets["mysql"].get("port", 3306)),
+                "user":     st.secrets["mysql"]["user"],
+                "password": st.secrets["mysql"]["password"],
+                "database": st.secrets["mysql"]["database"],
+            }
+    except Exception:
+        pass
+    return {
+        "host":     os.getenv("DB_HOST", "localhost"),
+        "port":     int(os.getenv("DB_PORT", 3306)),
+        "user":     os.getenv("DB_USER", "root"),
+        "password": os.getenv("DB_PASSWORD", "root"),
+        "database": os.getenv("DB_NAME", "audit_intelligence"),
+    }
+
+DB_CONFIG = _load_db_config()
 
 
 def get_connection():
