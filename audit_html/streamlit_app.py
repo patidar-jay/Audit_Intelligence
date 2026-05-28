@@ -97,10 +97,7 @@ section[data-testid="stSidebar"] {
     background: #ffffff !important;
     border-right: 1px solid var(--border);
     box-shadow: 2px 0 20px rgba(0,0,0,0.03);
-}
-section[data-testid="stSidebar"] * {
-    font-family: 'Outfit', sans-serif;
-}
+
 section[data-testid="stSidebar"] .stMarkdown h1,
 section[data-testid="stSidebar"] .stMarkdown h2,
 section[data-testid="stSidebar"] .stMarkdown h3 {
@@ -137,20 +134,7 @@ section[data-testid="stFileUploader"]:hover {
     border-color: #2563eb;
     background: #eff6ff;
 }
-section[data-testid="stFileUploader"] small {
-    color: #64748b !important;
-}
-section[data-testid="stFileUploader"] button {
-    background: #ffffff !important;
-    color: #2563eb !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-}
-section[data-testid="stFileUploader"] button:hover {
-    border-color: #2563eb !important;
-    background: #eff6ff !important;
-}
+
 
 /* ── CARD component (Light Mode) ──────────────────────────── */
 .card {

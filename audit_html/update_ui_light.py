@@ -40,7 +40,7 @@ new_css = """
 * {
     cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='5' fill='%230f172a' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E") 12 12, auto;
 }
-a, button, [role="button"], .stButton > button, section[data-testid="stSidebar"] .stButton > button, section[data-testid="stFileUploader"] {
+a, button, [role="button"], .stButton > button, section[data-testid="stSidebar"] .stButton > button {
     cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='16' cy='16' r='6' fill='%232563eb' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='14' stroke='%232563eb' stroke-width='1.5' stroke-dasharray='4 4' opacity='0.7'/%3E%3C/svg%3E") 16 16, pointer !important;
 }
 
@@ -58,9 +58,6 @@ section[data-testid="stSidebar"] {
     background: #ffffff !important;
     border-right: 1px solid var(--border);
     box-shadow: 2px 0 20px rgba(0,0,0,0.03);
-}
-section[data-testid="stSidebar"] * {
-    font-family: 'Outfit', sans-serif;
 }
 section[data-testid="stSidebar"] .stMarkdown h1,
 section[data-testid="stSidebar"] .stMarkdown h2,
