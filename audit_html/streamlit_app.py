@@ -42,6 +42,7 @@ st.markdown("""
 
 
 
+
 <style>
 /* ── Font applied ────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
@@ -75,6 +76,13 @@ st.markdown("""
 }
 
 /* ── Global ──────────────────────────────────────────────── */
+* {
+    cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='5' fill='%230f172a' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E") 12 12, auto;
+}
+a, button, [role="button"], .stButton > button, section[data-testid="stSidebar"] .stButton > button, section[data-testid="stFileUploader"] {
+    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='16' cy='16' r='6' fill='%232563eb' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='14' stroke='%232563eb' stroke-width='1.5' stroke-dasharray='4 4' opacity='0.7'/%3E%3C/svg%3E") 16 16, pointer !important;
+}
+
 .stApp {
     font-family: 'Outfit', sans-serif;
     background: #f8fafc !important; /* Soft light background */
@@ -417,6 +425,7 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     box-shadow: 0 12px 30px rgba(37,99,235,0.08);
 }
 </style>
+
 
 
 
