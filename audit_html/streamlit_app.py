@@ -97,7 +97,7 @@ section[data-testid="stSidebar"] {
     background: #ffffff !important;
     border-right: 1px solid var(--border);
     box-shadow: 2px 0 20px rgba(0,0,0,0.03);
-
+}
 section[data-testid="stSidebar"] .stMarkdown h1,
 section[data-testid="stSidebar"] .stMarkdown h2,
 section[data-testid="stSidebar"] .stMarkdown h3 {
