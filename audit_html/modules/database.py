@@ -18,17 +18,29 @@ def get_connection():
     
     try:
         import streamlit as st
+        # 1. Try URL string first
         if "SUPABASE_URL" in st.secrets:
             return psycopg2.connect(st.secrets["SUPABASE_URL"])
+            
+        # 2. Try the [mysql] block the user already has on Streamlit Cloud
+        if "mysql" in st.secrets:
+            db_cfg = {
+                "host":     st.secrets["mysql"]["host"],
+                "port":     int(st.secrets["mysql"].get("port", 3306)),
+                "user":     st.secrets["mysql"]["user"],
+                "password": st.secrets["mysql"]["password"],
+                "database": st.secrets["mysql"]["database"],
+            }
+            return psycopg2.connect(**db_cfg)
     except Exception:
         pass
 
-    # Fallback to env var
+    # 3. Fallback to env var
     db_url = os.getenv("SUPABASE_URL")
     if db_url:
         return psycopg2.connect(db_url)
     
-    raise RuntimeError("SUPABASE_URL not found in st.secrets or environment variables.")
+    raise RuntimeError("Supabase credentials not found in st.secrets or env vars.")
 
 
 def init_database():
