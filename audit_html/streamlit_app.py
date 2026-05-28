@@ -39,16 +39,17 @@ st.markdown('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400
 st.markdown("""
 
 
+
 <style>
 /* ── Font applied ────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ── Root vars (Dark Premium) ────────────────────────────── */
+/* ── Root vars (Emerald Green & Silver) ──────────────────── */
 :root {
     --primary:   #09090b;
     --primary-gradient: linear-gradient(135deg, #ffffff, #94a3b8);
-    --accent:    #3b82f6;
-    --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --accent:    #10b981;
+    --accent-gradient: linear-gradient(135deg, #34d399, #059669);
     --card-bg:   rgba(255, 255, 255, 0.03);
     --card-hover: rgba(255, 255, 255, 0.05);
     --text:      #f8fafc;
@@ -115,8 +116,8 @@ section[data-testid="stFileUploader"] {
     transition: all 0.3s ease;
 }
 section[data-testid="stFileUploader"]:hover {
-    border-color: #3b82f6;
-    background: rgba(59, 130, 246, 0.05);
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.05);
 }
 section[data-testid="stFileUploader"] * {
     color: #cbd5e1 !important;
@@ -138,15 +139,15 @@ div[data-testid="stMetric"] {
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px 24px;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #10b981; /* Emerald border */
     transition: all 0.3s ease;
     animation: fadeInUp 0.6s ease forwards;
 }
 div[data-testid="stMetric"]:hover {
     transform: translateY(-4px);
     background: var(--card-hover);
-    border-left-color: #8b5cf6;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border-left-color: #059669; /* Darker emerald on hover */
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
 }
 div[data-testid="stMetric"] label {
     color: #94a3b8 !important;
@@ -177,8 +178,8 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 }
 .stTabs [aria-selected="true"] {
     background: rgba(255,255,255,0.05) !important;
-    color: #3b82f6 !important;
-    border-bottom: 2px solid #3b82f6 !important;
+    color: #10b981 !important;
+    border-bottom: 2px solid #10b981 !important;
 }
 
 /* ── Data tables ─────────────────────────────────────────── */
@@ -210,7 +211,7 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 .stButton > button[kind="primary"]:hover,
 .stButton > button[data-testid="stBaseButton-primary"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(59,130,246,0.6) !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
 }
 /* Secondary buttons - Dark Theme Fix */
 .stButton > button {
@@ -237,13 +238,13 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     border-radius: 8px !important;
 }
 .stTextInput input:focus, .stNumberInput input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 8px rgba(59,130,246,0.4) !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3) !important;
 }
 
 /* ── Insight cards ───────────────────────────────────────── */
 .insight-card {
-    border-left: 4px solid #8b5cf6;
+    border-left: 4px solid #059669;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 0 16px 16px 0;
@@ -320,8 +321,8 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 .feature-card:hover {
     transform: translateY(-6px);
     background: rgba(255,255,255,0.06);
-    border-color: #3b82f6;
-    box-shadow: 0 0 20px rgba(59,130,246,0.1);
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
 }
 .feature-card .feat-icon { font-size: 36px; margin-bottom: 12px; }
 .feature-card .feat-title { font-weight: 800; color: #ffffff; font-size: 16px;}
@@ -344,14 +345,14 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 .hero-section::before {
     content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
     width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
     border-radius: 50%; pointer-events: none; z-index: -1;
 }
 .hero-badge {
     display: inline-block; padding: 10px 24px; border-radius: 30px;
     font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
-    background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4);
-    color: #60a5fa; margin-bottom: 28px;
+    background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399; margin-bottom: 28px;
 }
 .hero-title {
     font-size: 56px; font-weight: 900; line-height: 1.1; color: #ffffff; margin: 0 0 20px 0;
@@ -377,10 +378,11 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     transition: all 0.3s;
 }
 .glass-card:hover {
-    transform: translateY(-8px); background: rgba(255,255,255,0.06); border-color: #3b82f6;
-    box-shadow: 0 0 30px rgba(59,130,246,0.1);
+    transform: translateY(-8px); background: rgba(255,255,255,0.06); border-color: #10b981;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
 }
 </style>
+
 
 
 """, unsafe_allow_html=True)
