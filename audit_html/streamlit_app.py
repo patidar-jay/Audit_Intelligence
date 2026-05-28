@@ -404,6 +404,63 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
     transform: translateY(-8px); border-color: #2563eb;
     box-shadow: 0 12px 30px rgba(37,99,235,0.08);
 }
+.glass-icon { font-size: 40px; display: block; margin-bottom: 16px; }
+.glass-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+.glass-desc { font-size: 14px; color: #64748b; line-height: 1.6; }
+
+/* ── Step cards ──────────────────────────────────────────── */
+.step-card {
+    display: flex; gap: 20px; align-items: flex-start;
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-radius: 20px; padding: 28px; margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: all 0.3s;
+}
+.step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    border-color: #2563eb;
+}
+.step-num {
+    min-width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #8b5cf6);
+    color: #ffffff; font-size: 18px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.step-body h4 { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
+.step-body p { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; }
+
+/* ── Tech pills ──────────────────────────────────────────── */
+.tech-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 30px;
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    font-size: 13px; font-weight: 600; color: #334155;
+    margin: 4px;
+    transition: all 0.3s;
+}
+.tech-pill:hover {
+    background: #eff6ff; border-color: #bfdbfe; color: #2563eb;
+    transform: translateY(-2px);
+}
+.pill-icon { font-size: 16px; }
+
+/* ── CTA banner ──────────────────────────────────────────── */
+.cta-banner {
+    text-align: center; padding: 48px 20px 16px;
+}
+.cta-banner h2 { font-size: 36px; font-weight: 900; color: #0f172a; margin: 0 0 8px 0; }
+.cta-banner p { font-size: 16px; color: #64748b; margin: 0; }
+
+/* ── Glow variants for feature cards ─────────────────────── */
+.glow-cyan:hover { border-color: #06b6d4; box-shadow: 0 12px 30px rgba(6,182,212,0.1); }
+.glow-purple:hover { border-color: #8b5cf6; box-shadow: 0 12px 30px rgba(139,92,246,0.1); }
+.glow-green:hover { border-color: #10b981; box-shadow: 0 12px 30px rgba(16,185,129,0.1); }
+.glow-warning:hover { border-color: #f59e0b; box-shadow: 0 12px 30px rgba(245,158,11,0.1); }
+.glow-danger:hover { border-color: #ef4444; box-shadow: 0 12px 30px rgba(239,68,68,0.1); }
+.glow-teal:hover { border-color: #14b8a6; box-shadow: 0 12px 30px rgba(20,184,166,0.1); }
+
 </style>
 
 
