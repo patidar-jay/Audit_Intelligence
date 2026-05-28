@@ -556,13 +556,6 @@ CHART_LAYOUT = dict(
     xaxis=dict(showgrid=False, zeroline=False, linecolor="rgba(255,255,255,0.1)", tickfont=dict(color="#94a3b8")),
     yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.05)", zeroline=False, linecolor="rgba(255,255,255,0.1)", tickfont=dict(color="#94a3b8")),
     hoverlabel=dict(bgcolor="#0f172a", font_size=14, font_family="Outfit, sans-serif", bordercolor="rgba(255,255,255,0.2)"),
-)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#0f172a", family="Outfit, sans-serif", size=13),
-    margin=dict(l=40, r=20, t=50, b=40),
-    xaxis=dict(showgrid=False, zeroline=False, linecolor="rgba(0,0,0,0.1)", tickfont=dict(color="#64748b")),
-    yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.04)", zeroline=False, linecolor="rgba(0,0,0,0.1)", tickfont=dict(color="#64748b")),
-    hoverlabel=dict(bgcolor="rgba(255,255,255,0.9)", font_size=14, font_family="Outfit, sans-serif", bordercolor="rgba(0,0,0,0.1)"),
 )
 
 
