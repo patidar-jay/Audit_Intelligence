@@ -31,7 +31,7 @@ st.set_page_config(
     page_title="Audit Intelligence",
     page_icon="🔍",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ── Custom CSS — Enterprise Light Theme ────────────────────────────────────────
@@ -40,12 +40,7 @@ st.markdown("""
 <style>
 /* ── Font applied ────────────────────────────────────────── */
 
-/* ── HIDE DEFAULT STREAMLIT UI ───────────────────────────── */
-#MainMenu {visibility: hidden;}
-header {visibility: hidden;}
-footer {visibility: hidden;}
-div[data-testid="stDecoration"] {display: none;}
-div[data-testid="stToolbar"] {display: none;}
+/* Removed custom hiding of default Streamlit UI so sidebar toggles function correctly */
 
 /* ── Root vars ───────────────────────────────────────────── */
 :root {
