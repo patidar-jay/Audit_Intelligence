@@ -137,23 +137,19 @@ section[data-testid="stFileUploader"]:hover {
     border-color: #2563eb;
     background: #eff6ff;
 }
-section[data-testid="stFileUploader"] * {
-    color: #334155 !important;
+section[data-testid="stFileUploader"] small {
+    color: #64748b !important;
 }
 section[data-testid="stFileUploader"] button {
-    background: #2563eb !important;
-    color: #ffffff !important;
-    border: none !important;
+    background: #ffffff !important;
+    color: #2563eb !important;
+    border: 1px solid #cbd5e1 !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
-    padding: 8px 16px !important;
-    box-shadow: 0 4px 10px rgba(37,99,235,0.2) !important;
-    margin-top: 10px;
 }
 section[data-testid="stFileUploader"] button:hover {
-    background: #1d4ed8 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(37,99,235,0.3) !important;
+    border-color: #2563eb !important;
+    background: #eff6ff !important;
 }
 
 /* ── CARD component (Light Mode) ──────────────────────────── */
