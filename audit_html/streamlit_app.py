@@ -1072,7 +1072,7 @@ def page_dashboard():
                         for t in sus[:50]:
                             flags = ", ".join(t.get("reasons", []))
                             line = f"Row {t['row']}: {t['vendor']} | Rs {t['amount']:,.2f} | {t['mode']} | {flags}"
-                            pdf.cell(0, 5, _safe(line), ln=True)
+                            pdf.multi_cell(0, 5, _safe(line))
 
                         return pdf.output()
                     except Exception as e:
