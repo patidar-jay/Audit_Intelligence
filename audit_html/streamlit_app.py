@@ -24,7 +24,7 @@ from modules.database import (
     get_audit_history, get_dashboard_stats,
     init_database, DB_AVAILABLE,
 )
-from modules.gstin_validator import validate_gstin_format, validate_gstin_list
+from modules.gstin_validator import validate_gstin_format, validate_gstin_list, verify_gstin_online
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -1454,22 +1454,44 @@ def page_gstin():
                 label_visibility="collapsed",
             ).strip().upper()
 
-            if st.button("✅ Validate", key="validate_single", type="primary"):
+            api_key = st.text_input("Appyflow API Key (Optional)", type="password", help="Get a free key from appyflow.in for real-time verification")
+            
+            btn_col1, btn_col2 = st.columns(2)
+            with btn_col1:
+                validate_offline = st.button("✅ Offline Check", key="validate_single", use_container_width=True)
+            with btn_col2:
+                validate_online = st.button("🌐 Verify Online", key="verify_online", type="primary", use_container_width=True)
+
+            if validate_offline or validate_online:
                 if not gstin_input:
                     st.error("Please enter a GSTIN.")
+                elif validate_online and not api_key:
+                    st.error("Please enter your Appyflow API Key for online verification.")
                 else:
-                    result = validate_gstin_format(gstin_input)
-                    if result["valid"]:
-                        st.success("✅ **VALID GSTIN**")
-                        r_cols = st.columns(2)
-                        with r_cols[0]:
-                            st.markdown(f"**GSTIN:** `{result['gstin']}`")
-                            st.markdown(f"**State Code:** `{result['state_code']}`")
-                        with r_cols[1]:
-                            st.markdown(f"**State:** {result['state']}")
-                            st.markdown(f"**PAN:** `{result['pan']}`")
-                    else:
-                        st.error(f"❌ **INVALID GSTIN** — {result['message']}")
+                    if validate_offline:
+                        result = validate_gstin_format(gstin_input)
+                        if result["valid"]:
+                            st.success("✅ **VALID FORMAT**")
+                            r_cols = st.columns(2)
+                            with r_cols[0]:
+                                st.markdown(f"**GSTIN:** `{result['gstin']}`")
+                                st.markdown(f"**State Code:** `{result['state_code']}`")
+                            with r_cols[1]:
+                                st.markdown(f"**State:** {result['state']}")
+                                st.markdown(f"**PAN:** `{result['pan']}`")
+                        else:
+                            st.error(f"❌ **INVALID FORMAT** — {result['message']}")
+                    elif validate_online:
+                        with st.spinner("Verifying with Appyflow..."):
+                            result = verify_gstin_online(gstin_input, api_key)
+                        if result["valid"]:
+                            st.success("✅ **VERIFIED ONLINE**")
+                            st.markdown(f"**Legal Name:** `{result.get('legal_name')}`")
+                            st.markdown(f"**Trade Name:** `{result.get('trade_name')}`")
+                            st.markdown(f"**Status:** `{result.get('status')}` | **Type:** `{result.get('type')}`")
+                            st.markdown(f"**Address:** {result.get('address')}")
+                        else:
+                            st.error(f"❌ **VERIFICATION FAILED** — {result['message']}")
 
         with col_guide:
             st.markdown("#### GSTIN Format Guide")

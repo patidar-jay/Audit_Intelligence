@@ -47,3 +47,39 @@ def validate_gstin_list(gstin_list):
             seen[gstin] = result
             results.append(result)
     return results
+
+import requests
+
+def verify_gstin_online(gstin, api_key):
+    """Verify GSTIN online using Appyflow API."""
+    if not api_key:
+        return {"valid": False, "message": "API key missing for online verification."}
+    
+    url = "https://appyflow.in/api/verifyGST"
+    params = {
+        "gstNo": gstin.strip().upper(),
+        "key_secret": api_key
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if not data.get("error"):
+                taxpayer = data.get("taxpayerInfo", {})
+                return {
+                    "valid": True,
+                    "gstin": gstin,
+                    "legal_name": taxpayer.get("lgnm", "N/A"),
+                    "trade_name": taxpayer.get("tradeNam", "N/A"),
+                    "status": taxpayer.get("sts", "N/A"),
+                    "type": taxpayer.get("dty", "N/A"),
+                    "address": taxpayer.get("pradr", {}).get("adr", "N/A"),
+                    "message": "Verified Online"
+                }
+            else:
+                return {"valid": False, "message": data.get("message", "API Error")}
+        else:
+            return {"valid": False, "message": f"HTTP Error {response.status_code}"}
+    except Exception as e:
+        return {"valid": False, "message": f"Connection Error: {str(e)}"}
