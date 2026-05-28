@@ -1075,22 +1075,23 @@ def page_dashboard():
                             pdf.cell(0, 5, _safe(line), ln=True)
 
                         return pdf.output()
-                    except Exception:
+                    except Exception as e:
+                        st.error(f"PDF Debug Error: {str(e)}")
                         return None
 
-                if st.button("📄 Generate PDF Report", key="gen_pdf_btn"):
-                    with st.spinner("Generating PDF..."):
-                        pdf_data = generate_pdf()
-                    if pdf_data:
-                        st.download_button(
-                            "⬇ Download PDF",
-                            data=pdf_data,
-                            file_name="audit_report.pdf",
-                            mime="application/pdf",
-                            key="download_pdf_btn",
-                        )
-                    else:
-                        st.warning("PDF generation failed. Try exporting as CSV instead.")
+                # Generate PDF instantly (it's small) and show the download button directly
+                # to avoid Streamlit state refresh issues with nested buttons.
+                pdf_data = generate_pdf()
+                if pdf_data:
+                    st.download_button(
+                        "📄 Download PDF Report",
+                        data=pdf_data,
+                        file_name="audit_report.pdf",
+                        mime="application/pdf",
+                        key="download_pdf_btn",
+                    )
+                else:
+                    st.error("PDF generation failed due to a formatting error. Try exporting as CSV instead.")
             except ImportError:
                 st.info("Install fpdf2 for PDF: `pip install fpdf2`")
 
