@@ -362,7 +362,7 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 /* ══════════════════════════════════════════════════════════ */
 /*  HOME PAGE STYLES                                         */
 /* ══════════════════════════════════════════════════════════ */
-.hero-section { text-align: center; padding: 80px 20px 60px; position: relative; }
+.hero-section { text-align: center; padding: 80px 20px 60px; position: relative; max-width: 900px; margin: 0 auto; }
 .hero-section::before {
     content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
     width: 600px; height: 600px;
