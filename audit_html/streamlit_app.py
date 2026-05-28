@@ -1454,7 +1454,8 @@ def page_gstin():
                 label_visibility="collapsed",
             ).strip().upper()
 
-            api_key = st.text_input("Appyflow API Key (Optional)", type="password", help="Get a free key from appyflow.in for real-time verification")
+            # Hardcoded API key for seamless verification
+            api_key = "279a88da13f384305ff14982949a7e73"
             
             btn_col1, btn_col2 = st.columns(2)
             with btn_col1:
@@ -1465,8 +1466,6 @@ def page_gstin():
             if validate_offline or validate_online:
                 if not gstin_input:
                     st.error("Please enter a GSTIN.")
-                elif validate_online and not api_key:
-                    st.error("Please enter your Appyflow API Key for online verification.")
                 else:
                     if validate_offline:
                         result = validate_gstin_format(gstin_input)
@@ -1482,7 +1481,7 @@ def page_gstin():
                         else:
                             st.error(f"❌ **INVALID FORMAT** — {result['message']}")
                     elif validate_online:
-                        with st.spinner("Verifying with Appyflow..."):
+                        with st.spinner("Verifying Online..."):
                             result = verify_gstin_online(gstin_input, api_key)
                         if result["valid"]:
                             st.success("✅ **VERIFIED ONLINE**")
