@@ -51,25 +51,23 @@ def validate_gstin_list(gstin_list):
 import requests
 
 def verify_gstin_online(gstin, api_key):
-    """Verify GSTIN online using Appyflow API."""
+    """Verify GSTIN online using gstincheck.co.in API."""
     if not api_key:
         return {"valid": False, "message": "API key missing for online verification."}
     
-    url = "https://appyflow.in/api/verifyGST"
-    params = {
-        "gstNo": gstin.strip().upper(),
-        "key_secret": api_key
-    }
+    gstin_clean = gstin.strip().upper()
+    url = f"https://sheet.gstincheck.co.in/check/{api_key}/{gstin_clean}"
     
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            if not data.get("error"):
-                taxpayer = data.get("taxpayerInfo", {})
+            # gstincheck typically returns a boolean 'flag' and data in 'data' object
+            if data.get("flag") == True:
+                taxpayer = data.get("data", {})
                 return {
                     "valid": True,
-                    "gstin": gstin,
+                    "gstin": gstin_clean,
                     "legal_name": taxpayer.get("lgnm", "N/A"),
                     "trade_name": taxpayer.get("tradeNam", "N/A"),
                     "status": taxpayer.get("sts", "N/A"),
@@ -78,7 +76,7 @@ def verify_gstin_online(gstin, api_key):
                     "message": "Verified Online"
                 }
             else:
-                return {"valid": False, "message": data.get("message", "API Error")}
+                return {"valid": False, "message": data.get("message", "API Error - Invalid GSTIN or Key")}
         else:
             return {"valid": False, "message": f"HTTP Error {response.status_code}"}
     except Exception as e:
