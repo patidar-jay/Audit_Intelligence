@@ -6,10 +6,11 @@ import os
 from datetime import datetime
 
 try:
-    import mysql.connector
-    MYSQL_AVAILABLE = True
+    import psycopg2
+    import psycopg2.extras
+    DB_AVAILABLE = True
 except ImportError:
-    MYSQL_AVAILABLE = False
+    DB_AVAILABLE = False
 
 def _load_db_config():
     """Load DB config from st.secrets (Streamlit Cloud) → env vars → defaults."""
@@ -37,13 +38,13 @@ DB_CONFIG = _load_db_config()
 
 
 def get_connection():
-    if not MYSQL_AVAILABLE:
-        raise RuntimeError("mysql-connector-python not installed.")
-    return mysql.connector.connect(**DB_CONFIG)
+    if not DB_AVAILABLE:
+        raise RuntimeError("psycopg2 not installed.")
+    return psycopg2.connect(**DB_CONFIG)
 
 
 def init_database():
-    if not MYSQL_AVAILABLE:
+    if not DB_AVAILABLE:
         return False
     try:
         conn = get_connection()
@@ -89,7 +90,7 @@ def create_user(username, email, password, full_name="", role="auditor"):
 def login_user(username, password):
     try:
         conn = get_connection()
-        cur  = conn.cursor(dictionary=True)
+        cur  = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cur.fetchone()
         cur.close(); conn.close()
@@ -119,13 +120,14 @@ def save_audit_session(user_id, filename, results):
              flag_rate, duplicate_invoices, cash_violations, structured_payments,
              ai_anomalies, high_risk_vendors)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING id
         """, (
             user_id, filename,
             s["total_transactions"], s["total_flagged"], s["total_amount"],
             s["flag_rate"], s["duplicate_invoices"], s["cash_violations"],
             s["structured_payments"], s["ai_anomalies"], s["high_risk_vendors"]
         ))
-        session_id = cur.lastrowid
+        session_id = cur.fetchone()[0]
 
         for t in results["suspicious_transactions"]:
             reasons = t["reasons"]
@@ -170,7 +172,7 @@ def save_audit_session(user_id, filename, results):
 def get_audit_history(user_id, limit=20):
     try:
         conn = get_connection()
-        cur  = conn.cursor(dictionary=True)
+        cur  = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("""
             SELECT * FROM audit_sessions
             WHERE user_id=%s ORDER BY upload_date DESC LIMIT %s
@@ -185,7 +187,7 @@ def get_audit_history(user_id, limit=20):
 def get_dashboard_stats(user_id):
     try:
         conn = get_connection()
-        cur  = conn.cursor(dictionary=True)
+        cur  = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("""
             SELECT COUNT(*) as total_audits,
                    SUM(total_transactions) as total_txns,

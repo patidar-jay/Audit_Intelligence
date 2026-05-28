@@ -22,7 +22,7 @@ from modules.audit_engine import AuditEngine
 from modules.database import (
     login_user, create_user, save_audit_session,
     get_audit_history, get_dashboard_stats,
-    init_database, MYSQL_AVAILABLE,
+    init_database, DB_AVAILABLE,
 )
 from modules.gstin_validator import validate_gstin_format, validate_gstin_list
 
@@ -826,7 +826,7 @@ if "show_home" not in st.session_state:
 # Initialize DB on startup
 if "db_initialized" not in st.session_state:
     st.session_state.db_initialized = False
-    if MYSQL_AVAILABLE:
+    if DB_AVAILABLE:
         st.session_state.db_initialized = init_database()
 
 
@@ -843,8 +843,8 @@ def page_login():
     </div>
     """, unsafe_allow_html=True)
 
-    if not MYSQL_AVAILABLE:
-        st.warning("⚠️ MySQL not connected — running in Demo Mode")
+    if not DB_AVAILABLE:
+        st.warning("⚠️ Database not connected — running in Demo Mode")
 
     tab_login, tab_register = st.tabs(["🔐 Login", "📝 Register"])
 
@@ -861,7 +861,7 @@ def page_login():
             if login_btn:
                 if not username or not password:
                     st.error("Please enter username and password.")
-                elif not MYSQL_AVAILABLE:
+                elif not DB_AVAILABLE:
                     # Demo mode login
                     st.session_state.logged_in = True
                     st.session_state.user = {
@@ -911,7 +911,7 @@ def page_login():
                     st.error("Password must be at least 6 characters.")
                 elif reg_pass != reg_conf:
                     st.error("Passwords do not match.")
-                elif not MYSQL_AVAILABLE:
+                elif not DB_AVAILABLE:
                     st.error("Database not connected. Use Demo Login.")
                 else:
                     ok, msg = create_user(reg_user, reg_email, reg_pass, reg_name)
@@ -989,7 +989,7 @@ def render_sidebar():
                 sample_df = generate_sample_data()
                 results = run_audit_on_df(sample_df)
                 st.session_state.audit_results = results
-                if MYSQL_AVAILABLE:
+                if DB_AVAILABLE:
                     user_id = st.session_state.user.get("id", 1)
                     save_audit_session(user_id, "sample_transactions.csv", results)
             st.session_state.current_page = "Dashboard"
@@ -1001,7 +1001,7 @@ def render_sidebar():
                 with st.spinner("🔍 Running AI Audit Pipeline..."):
                     results = run_audit_on_file(uploaded_file)
                     st.session_state.audit_results = results
-                    if MYSQL_AVAILABLE:
+                    if DB_AVAILABLE:
                         user_id = st.session_state.user.get("id", 1)
                         save_audit_session(user_id, uploaded_file.name, results)
                 st.session_state.current_page = "Dashboard"
@@ -1472,8 +1472,8 @@ def page_history():
     </div>
     """, unsafe_allow_html=True)
 
-    if not MYSQL_AVAILABLE:
-        st.warning("⚠️ MySQL not connected. History is only available when MySQL is running.")
+    if not DB_AVAILABLE:
+        st.warning("⚠️ Database not connected. History is only available when Database is running.")
         st.info("No audit sessions found. Upload a file from the Dashboard to get started.")
         return
 
@@ -1756,7 +1756,7 @@ def page_home():
         <span class="tech-pill"><span class="pill-icon">🎯</span> Streamlit</span>
         <span class="tech-pill"><span class="pill-icon">🧠</span> Scikit-Learn</span>
         <span class="tech-pill"><span class="pill-icon">📊</span> Plotly</span>
-        <span class="tech-pill"><span class="pill-icon">🐬</span> MySQL</span>
+        <span class="tech-pill"><span class="pill-icon">🐬</span> Database</span>
         <span class="tech-pill"><span class="pill-icon">🐼</span> Pandas</span>
         <span class="tech-pill"><span class="pill-icon">📄</span> FPDF2</span>
     </div>
