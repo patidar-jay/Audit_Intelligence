@@ -41,6 +41,7 @@ st.markdown("""
 
 
 
+
 <style>
 /* ── Font applied ────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
@@ -122,10 +123,29 @@ section[data-testid="stFileUploader"] {
     border-radius: 14px;
     background: #f8fafc;
     transition: all 0.3s ease;
+    padding: 16px;
 }
 section[data-testid="stFileUploader"]:hover {
     border-color: #2563eb;
     background: #eff6ff;
+}
+section[data-testid="stFileUploader"] * {
+    color: #334155 !important;
+}
+section[data-testid="stFileUploader"] button {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+    box-shadow: 0 4px 10px rgba(37,99,235,0.2) !important;
+    margin-top: 10px;
+}
+section[data-testid="stFileUploader"] button:hover {
+    background: #1d4ed8 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(37,99,235,0.3) !important;
 }
 
 /* ── CARD component (Light Mode) ──────────────────────────── */
@@ -401,6 +421,7 @@ div[data-testid="stMetric"] [data-testid="stMetricValue"] {
 
 
 
+
 """, unsafe_allow_html=True)
 
 
@@ -568,6 +589,13 @@ def run_audit_on_df(df):
 # ── Plotly chart helpers ───────────────────────────────────────────────────────
 CHART_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#0f172a", family="Outfit, sans-serif", size=13),
+    margin=dict(l=40, r=20, t=50, b=40),
+    xaxis=dict(showgrid=False, zeroline=False, linecolor="#e2e8f0", tickfont=dict(color="#64748b")),
+    yaxis=dict(showgrid=True, gridcolor="#f1f5f9", zeroline=False, linecolor="#e2e8f0", tickfont=dict(color="#64748b")),
+    hoverlabel=dict(bgcolor="#ffffff", font_size=14, font_family="Outfit, sans-serif", bordercolor="#cbd5e1"),
+)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(color="#0f172a", family="Outfit, sans-serif", size=13),
     margin=dict(l=40, r=20, t=50, b=40),
